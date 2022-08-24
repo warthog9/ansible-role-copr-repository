@@ -1,14 +1,17 @@
 ---
 - name: assert that platform is supported
   assert:
-    that: ansible_distribution | lower in ["centos", "fedora"]
-    message: "Unsupported platform ('{{ ansible_distribution }}')"
+    that:
+      - ansible_distribution_file_variety == "RedHat"
+    fail_msg: "Unsupported platform ('{{ ansible_distribution }}')"
+    success_msg: "{{ ansible_distribution }} is supported"
 
 - name: assert that action is supported
   assert:
-    that: copr_repository_action | lower in ["install", "remove"]
-    message: "Unsupported action ('{{ copr_repository_action }}')"
-
+    that:
+      - copr_repository_action | lower in ["install", "remove"]
+    fail_msg: "Unsupported action ('{{ copr_repository_action }}')"
+    success_msg: "{{ copr_repository_action }} is supported"
 
 - include_tasks: "{{ ansible_distribution | lower }}/{{ copr_repository_action | lower }}.yml"
   tags:
